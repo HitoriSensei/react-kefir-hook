@@ -1,0 +1,21 @@
+{
+  "name": "react-kefir-hook",
+  "version": "0.9.9",
+  "description": "Simple hook that allows to use kefir.js streams in react components",
+  "main": "index.js",
+  "repository": "https://github.com/HitoriSensei/react-kefir-hook.git",
+  "author": "Piotr \"Hitori\" Bosak",
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc"
+  },
+  "devDependencies": {
+    "@types/kefir": "^3.8.2",
+    "@types/react": "^16.8",
+    "typescript": "^3.5.1"
+  },
+  "dependencies": {
+    "kefir": "^3.8.6",
+    "react": "^16.8"
+  }
+}
