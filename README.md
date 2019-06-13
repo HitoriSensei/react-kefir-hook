@@ -5,7 +5,23 @@ Simple hook that allows to use kefir.js streams and properties in react componen
  
 
 # Usage
-Hook uses dependencies exactly like `useEffect` does. 
+Hook's callback must return a kefir `Stream` or `Property`
+
+If you use a `Stream`, returned value will always by `undefined` until a stream emits any value 
+```
+// valueFromStream will initially be `undefined`, later it will contain values that the stream emits
+const valueFromStream = useStream(() => myStream)
+```
+
+If you use a `Property`, returned value will always contain a value 
+```
+// valueFromProperty will contain current value as well as next values emitted by the property
+const valueFromProperty = useStream(() => myProperty)
+```
+
+
+# Stream dependencies
+Hook uses dependencies exactly like `useEffect` does, as a second parameter
 
 Usage without dependencies. 
 
@@ -15,6 +31,7 @@ import { useStream } from 'react-kefir-hook'
 
 const SmallServerStatusButton = () => {
     
+    // connectionState$ is a kefir stream or property
     const connectionStatus = useStream(() => connectionState$)
 
     return <div>
@@ -25,7 +42,7 @@ const SmallServerStatusButton = () => {
 
 Usage with dependencies.
 
-Stream will be fetched whever dependencies change.
+Stream will be fetched whenever dependencies change.
 ```
 import { useStream } from 'react-kefir-hook'
 
