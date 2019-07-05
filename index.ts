@@ -1,20 +1,22 @@
-import { Property, Stream } from 'kefir'
-import { useEffect, useState } from 'react'
+import { Event, Observable } from 'kefir'
+import { useEffect, useMemo, useState } from 'react'
 
-export function useStream<T>(streamGen: () => Property<T, unknown>, deps?: any[]): T
-export function useStream<T>(streamGen: () => Stream<T, unknown>, deps: any[] = []): T | undefined {
-    let initial: T | undefined = undefined
-    const setInitial = (v: T) => initial = v
-    const stream = streamGen()
-    const initial$ = stream.take(1)
-    initial$.onValue(setInitial)
+export function useStream<T>(streamGen: () => Observable<T, unknown>, initialValue: T, deps?: any[]): T
+export function useStream<T>(streamGen: () => Observable<T, unknown>, initialValue?: undefined, deps?: any[]): T | undefined
+export function useStream<T>(streamGen: () => Observable<T, unknown>, initialValue?: T, deps: any[] = []): T | undefined {
+    const stream = useMemo(streamGen, deps)
 
-    let [value, setValue] = useState<T | undefined>(initial)
+    if ('_setActive' in stream) {
+        (<any>stream)._setActive(true)
+        const currentEvent = (<Event<any, any>>((<any>stream)._currentEvent))
+        if (currentEvent && currentEvent.type === 'value') {
+            initialValue = currentEvent.value
+        }
+    }
 
-    initial$.offValue(setInitial)
+    let [value, setValue] = useState<T | undefined>(initialValue)
 
     useEffect(() => {
-        const stream = streamGen()
         return stream.observe(setValue).unsubscribe
     }, deps)
 

@@ -1,6 +1,6 @@
 {
   "name": "react-kefir-hook",
-  "version": "0.9.9",
+  "version": "0.10.0",
   "description": "Simple hook that allows to use kefir.js streams in react components",
   "main": "index.js",
   "repository": "https://github.com/HitoriSensei/react-kefir-hook.git",
@@ -17,5 +17,8 @@
   "dependencies": {
     "kefir": "^3.8.6",
     "react": "^16.8"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
   }
 }
