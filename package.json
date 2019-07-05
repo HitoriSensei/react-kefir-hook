@@ -1,6 +1,6 @@
 {
   "name": "react-kefir-hook",
-  "version": "0.10.1",
+  "version": "0.10.2",
   "description": "Simple hook that allows to use kefir.js streams in react components",
   "main": "index.js",
   "repository": "https://github.com/HitoriSensei/react-kefir-hook.git",

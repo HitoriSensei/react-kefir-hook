@@ -21,11 +21,11 @@ const valueFromProperty = useStream(() => myProperty)
 
 
 # Stream dependencies
-Hook uses dependencies exactly like `useEffect` does, as a second parameter
+Hook uses dependencies like `useEffect` does, but as a third parameter (second one is `initialValue`)
 
 Usage without dependencies. 
 
-Stream will be fetched once per component mount.
+Stream will be fetched once per component mount (or more exactly memoized with React.useMemo).
 ```
 import { useStream } from 'react-kefir-hook'
 
@@ -48,7 +48,7 @@ import { useStream } from 'react-kefir-hook'
 
 const SmallServerStatusButton = () => {
     
-    const userData = useStream(() => getUserDataStream(userId), [userId])
+    const userData = useStream(() => getUserDataStream(userId), undefined, [userId])
 
     return <div>
         {userData ? <h1>{userData.name}</h1> : <h1>{loading...}</h1>}
@@ -62,7 +62,7 @@ Kefir stream will be activated when the `useStream` is used.
 If the stream returns the value synchronously (Property with an initialValue or an already active Property),
 the value will be used as a return from `useStream`.
 
-If provided stream will not return a value upon activation, an `undefined` or `initialValue` (3th argument for `useStream`) will be returned initially and 
+If provided stream will not return a value upon activation, an `undefined` or `initialValue` (2th argument for `useStream`) will be returned initially and 
 component will rerender and a new value will be returned whenever the stream emits.
 
 ```
@@ -73,7 +73,7 @@ const SmallServerStatusButton = () => {
     
     const helloProperty = useStream(() => constant('hello'))
     const helloStream = useStream(() => later(1000, 'hello'))
-    const helloStreamWithInitial = useStream(() => later(1000, 'hello'),undefined,'I am initial')
+    const helloStreamWithInitial = useStream(() => later(1000, 'hello'),'I am initial')
 
     return <div>
         <div>Prop: {helloProperty}</div>
