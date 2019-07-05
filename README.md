@@ -58,7 +58,12 @@ const SmallServerStatusButton = () => {
 
 # Initial data
 
-If you return a `Property`, you will always get a initial result.
+Kefir stream will be activated when the `useStream` is used.
+If the stream returns the value synchronously (Property with an initialValue or an already active Property),
+the value will be used as a return from `useStream`.
+
+If provided stream will not return a value upon activation, an `undefined` or `initialValue` (3th argument for `useStream`) will be returned initially and 
+component will rerender and a new value will be returned whenever the stream emits.
 
 ```
 import { constant, later } from 'kefir'
@@ -68,10 +73,12 @@ const SmallServerStatusButton = () => {
     
     const helloProperty = useStream(() => constant('hello'))
     const helloStream = useStream(() => later(1000, 'hello'))
+    const helloStreamWithInitial = useStream(() => later(1000, 'hello'),undefined,'I am initial')
 
     return <div>
         <div>Prop: {helloProperty}</div>
         <div>Stream: {helloStream}</div>
+        <div>Stream with initial: {helloStreamWithInitial}</div>
     </div>
 }
 ```
@@ -82,43 +89,13 @@ First:
 ```
 Prop: hello
 Stream: 
+Stream with initial: I am initial
 ```
 
-Second, about a secong later, when `later(1000, 'hello')` emits a value:
-
-```
-Prop: hello
-Stream: hello 
-```
----
-You may supply initial value by converting `Stream` to `Property` (kefir.js territory)
-```
-import { constant, later } from 'kefir'
-import { useStream } from 'react-kefir-hook'
-
-const SmallServerStatusButton = () => {
-    
-    const helloProperty = useStream(() => constant('hello'))
-    const helloStream = useStream(() => later(1000, 'hello').toProperty(() => 'I will hello later'))
-
-    return <div>
-        <div>Prop: {helloProperty}</div>
-        <div>Stream: {helloStream}</div>
-    </div>
-}
-```
-
-You will see two renders:
-
-First:
-```
-Prop: hello
-Stream: I will hello later
-```
-
-Second, about a secong later, when `later(1000, 'hello')` emits a value:
+Then, about a second later, when `later(1000, 'hello')` emits a value:
 
 ```
 Prop: hello
 Stream: hello 
+Stream with initial: hello
 ```
