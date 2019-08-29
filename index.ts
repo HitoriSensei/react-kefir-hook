@@ -6,18 +6,28 @@ export function useStream<T>(streamGen: () => Observable<T, unknown>, initialVal
 export function useStream<T>(streamGen: () => Observable<T, unknown>, initialValue?: T, deps: any[] = []): T | undefined {
     const stream = useMemo(streamGen, deps)
 
+    let hasInitial = false
     if ('_setActive' in stream) {
-        (<any>stream)._setActive(true)
-        const currentEvent = (<Event<any, any>>((<any>stream)._currentEvent))
+        const streamPorcelain = (<any>stream)
+        streamPorcelain._setActive(true)
+        const currentEvent = (<Event<any, any>>(streamPorcelain._currentEvent))
         if (currentEvent && currentEvent.type === 'value') {
+            hasInitial = true
             initialValue = currentEvent.value
         }
     }
 
     let [value, setValue] = useState<T | undefined>(initialValue)
 
+    const setError = (e: any) => {
+        console.error('useStream got error:', e)
+    }
+
     useEffect(() => {
-        return stream.observe(setValue).unsubscribe
+        return (hasInitial
+                ? stream.skip(1)
+                : stream
+        ).observe(setValue, setError).unsubscribe
     }, deps)
 
     return value
