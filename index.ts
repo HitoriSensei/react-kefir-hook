@@ -20,6 +20,7 @@ export function useStream<T>(streamGen: () => Observable<T, unknown>, initialVal
                 return currentEvent.value
             }
         }
+        return initialValue
     })
 
     useEffect(() => {
